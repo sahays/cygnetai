@@ -1,6 +1,7 @@
-import axios from "axios";
-import { useState } from "react";
+"use client";
 
+import { useState } from "react";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 export default function Home() {
   const [content, setContent] = useState("");
   const [result, setResult] = useState("");
@@ -18,7 +19,7 @@ export default function Home() {
         onClick={async (event) => {
           event.preventDefault();
           console.log(content);
-          const res = await fetch("/api/hello", {
+          const res = await fetch("/api/gpt", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -46,7 +47,7 @@ export default function Home() {
       >
         Submit
       </button>
-      <p className="p-2 text-sm">{result}</p>
+      <ReactMarkdown className="text-sm p-2">{result}</ReactMarkdown>
     </div>
   );
 }
