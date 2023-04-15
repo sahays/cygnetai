@@ -1,22 +1,7 @@
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
+import { GPTPayload } from "./GPTModel";
 
-export interface OpenAIStreamPayload {
-  model: string;
-  messages: Array<{
-    role: "user" | "system";
-    content: string;
-  }>;
-  temperature?: number;
-  top_p?: number;
-  frequency_penalty?: number;
-  presence_penalty?: number;
-  max_tokens?: number;
-  stream?: boolean;
-  n?: number;
-  user?: string;
-}
-
-export async function OpenAIStream(payload: OpenAIStreamPayload) {
+export async function ToReadableStream(payload: GPTPayload) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 

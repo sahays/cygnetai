@@ -1,20 +1,23 @@
-import { OpenAIStream, OpenAIStreamPayload } from "@/utils/OpenAIStream";
+import { CoachGPT } from "@/utils/GPTPersonas";
+import { ToReadableStream } from "@/utils/ChatCompletionStream";
+import { GPTPayload } from "@/utils/GPTModel";
 
 export async function POST(request: Request): Promise<Response> {
-  const body: any = await request.json();
+  const body = (await request.json()) as { content: string };
 
-  const payload: OpenAIStreamPayload = {
+  CoachGPT.push({
+    role: "user",
+    content: body.content,
+  });
+
+  const payload: GPTPayload = {
     model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "user",
-        content: body.content,
-      },
-    ],
+    messages: CoachGPT,
     stream: true,
   };
   try {
-    const stream = await OpenAIStream(payload);
+    console.log(payload);
+    const stream = await ToReadableStream(payload);
     return new Response(stream);
   } catch (e: any) {
     console.error(e.message);
