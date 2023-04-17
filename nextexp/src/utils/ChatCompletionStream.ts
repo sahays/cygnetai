@@ -1,50 +1,19 @@
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
-import { GPTPayload } from "./GPTModel";
+import { ReadableStreamDefaultController } from "stream/web";
 
-export async function ToReadableStream(payload: GPTPayload) {
-  const encoder = new TextEncoder();
+export async function ToReadableStream(
+  remoteApiCall: () => Promise<Response>,
+  externalParse: (event: any, controller: ReadableStreamDefaultController<any>) => void
+) {
   const decoder = new TextDecoder();
 
-  let counter = 0;
-
-  const opts = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ""}`,
-    },
-    method: "POST",
-    body: JSON.stringify(payload),
-  };
-  const res = await fetch("https://api.openai.com/v1/chat/completions", opts);
-
-  if (!res.ok) {
-    throw new Error(`GPT call failed: ${res.statusText}`);
-  }
+  const res = await remoteApiCall();
 
   const stream = new ReadableStream({
     async start(controller) {
       // callback
       function onParse(event: ParsedEvent | ReconnectInterval) {
-        if (event.type === "event") {
-          const data = event.data;
-          // https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
-          if (data === "[DONE]") {
-            controller.close();
-            return;
-          }
-          try {
-            const json = JSON.parse(data);
-            const text = json.choices[0].delta.content;
-            if (text) {
-              const queue = encoder.encode(text);
-              controller.enqueue(queue);
-              counter++;
-            }
-          } catch (e) {
-            // maybe parse error
-            controller.error(e);
-          }
-        }
+        externalParse(event, controller);
       }
 
       // stream response (SSE) from OpenAI may be fragmented into multiple chunks
