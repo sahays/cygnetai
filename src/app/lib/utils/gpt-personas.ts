@@ -1,4 +1,4 @@
-import { GPTMessage } from "./GPTModel";
+import { GPTMessage } from "../core/types/GPTMessage";
 
 export const CoachGPT: Array<GPTMessage> = [
   {
@@ -8,7 +8,6 @@ export const CoachGPT: Array<GPTMessage> = [
     Be kind and encouraging but critical of mistakes. 
     Use active voice.
     Be accurate and concise.
-    In your response, decorate all mathematical expressions and numbers in John Gruber's Markdown style code blocks.
     `,
   },
 ];

@@ -1,7 +1,4 @@
-export interface GPTMessage {
-  role: "user" | "system" | "assistant";
-  content: string;
-}
+import { GPTMessage } from "./GPTMessage";
 
 export interface GPTPayload {
   model: string;

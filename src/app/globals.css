@@ -5,7 +5,7 @@
 .markdown {
   @apply block overflow-auto;
   @apply text-start text-gray-600;
-  @apply text-sm;
+  @apply text-sm my-2 overflow-visible;
 }
 
 code {

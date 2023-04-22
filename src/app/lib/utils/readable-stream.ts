@@ -1,7 +1,7 @@
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 import { ReadableStreamDefaultController } from "stream/web";
 
-export async function ToReadableStream(
+export async function toReadableStream(
   remoteApiCall: () => Promise<Response>,
   externalParse: (event: any, controller: ReadableStreamDefaultController<any>) => void
 ) {
